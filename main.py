@@ -76,7 +76,6 @@ def extract_url_from_line(line):
     return None, None
 
 @bot.on_message(filters.command(["start"]))
-@force_subscribe
 async def start(bot: Client, m: Message):
     welcome_text = f"<b>👋 Hello {m.from_user.mention}!</b>\n\n<blockquote>📁 I am a bot for downloading files from your <b>.TXT</b> file and uploading them to Telegram.\n\n🚀 To get started, send /upload command and follow the steps.</blockquote>"
     
@@ -106,23 +105,7 @@ async def start(bot: Client, m: Message):
             parse_mode=ParseMode.HTML
         )
 
-@bot.on_callback_query()
-async def callback_handler(bot: Client, query: CallbackQuery):
-    data = query.data
-    
-    if data == "refresh_sub":
-        if FORCE_SUB_CHANNEL:
-            is_sub = await is_subscribed(bot, query.from_user.id)
-            if is_sub:
-                await query.message.delete()
-                await bot.send_message(
-                    query.from_user.id, 
-                    "✅ **Subscription Verified!**\n\nYou can now use the bot. Send /start to begin."
-                )
-            else:
-                await query.answer("❌ You haven't joined the channel yet!", show_alert=True)
-        else:
-            await query.answer("✅ No subscription required!")
+
     
     elif data == "upload_files":
         await query.answer("Send /upload command to start!", show_alert=True)
